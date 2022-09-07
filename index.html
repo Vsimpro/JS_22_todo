@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="user-scalable=0" />
+    <link rel="stylesheet" href="css/styles.css">
+    <script  src="js/script.js"> </script>
+    <title> todo app </title>
+</head>
+<body onload="onLoad()">
+    <div class="main-content">
+        <h1><img src="/img/welcome.png"></h1>
+        <h2 id="error" style="display:none;"> New task can't be under 3 characters! </h2>
+        <h2 id="limit" style="display:none;"> Too many tasks.. please remove some</h2>
+	<h2 id="toolong" style="display:none;"> Task must be 20 characters at most</h2>
+        <p> add a new task</p>
+            <input type="text" id="task" placeholder=" new task..."></input>
+            <button id="main" onclick="getTask()"> + </button>
+        <p> tasks </p>
+            <ul id="tasks">
+            </ul>
+        </div>
+    </body>
+</html>
