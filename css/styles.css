@@ -126,6 +126,7 @@ button:hover {
     border-radius: 2px;
 }
 
+
 @media (max-width: 1080px) {
   input[type='text'],
   input[type='number'],
@@ -150,11 +151,17 @@ button:hover {
 @media (min-width: 1080px) {
   .main-content {
     width: 25%;
+    padding-right: 2%;
   }
 
   li {
     width: 120%;
+    right: 3%;
     padding-bottom: 4%;
     padding-top: 4%
+  }
+
+  li:hover {
+    right: 2%;
   }
 }
