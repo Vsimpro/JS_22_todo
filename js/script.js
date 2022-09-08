@@ -29,14 +29,28 @@ function onLoad() {
 	    list.push(oldItems[i])
         }
     }
+
     // pressing enter triggers the "+" button;
     let taskbox = document.getElementById("task")
     taskbox.addEventListener("keypress", function(event) {
        if (event.key === "Enter") {
             event.preventDefault();
             document.getElementById("main").click();
-       } 
+       }
     });
+
+   // create "clear tasks" button
+   var clearall = document.getElementById("clear");
+   clearall.onclick = clearAll;
+}
+
+function clearAll() {
+    // clear the JSON
+    for (var i = 0; i < list.length; i++) {
+        removeFromJSon(list[i]);
+    }
+    // clear the <ul>
+   document.getElementById("tasks").innerHTML = "";
 }
 
 function doTask() {
@@ -89,6 +103,7 @@ function getTask() {
     var inputValue = document.getElementById("task").value;
     var errorLine = document.getElementById("task");
 
+    // input validation
     if (inputValue.length >= 20) {
 	document.getElementById("toolong").style.display = "";
 	errorLine.style["border"] = "2px dashed red";
@@ -108,7 +123,7 @@ function getTask() {
         addNewItem(inputValue)
         addItemToJSon(inputValue)
     }
-    
+
 
     // clear the value & error
     document.getElementById("task").value = "";
