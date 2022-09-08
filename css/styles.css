@@ -31,6 +31,16 @@ body {
     box-shadow: 8px 8px 2px #222222;
 }
 
+.clearall {
+   float: right;    
+}
+
+.clearall:hover {
+   position: relative;
+   right: 1%;
+   box-shadow:2px 2px 2px #222222;
+}
+
 h1 {
    width: 200px;
    user-select: none;
@@ -135,16 +145,22 @@ button:hover {
   }
 
   body {
-    font-size: 3vw;;
+    font-size: 4vw;;
   }
+
   .main-content {
-    width: 60%;
+    width: 80%;
     margin-top: 5%    
   }
+  .clearall {
+     font-size: 2vw;
+  }
+
+
   li {
-    width: 130%; 
-    padding-bottom: 4%;
-    padding-top: 4%;
+    width: 110%; 
+    padding-bottom: 2%;
+    padding-top: 2%;
   }
 }
 
