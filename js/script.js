@@ -38,6 +38,7 @@ window.onload = function(){
    // create "clear tasks" button
    var clearall = document.getElementById("clear");
    clearall.onclick = clearAll;
+   calcTasks()
 };
 
 
@@ -72,13 +73,23 @@ function clearAll() {
    document.getElementById("tasks").innerHTML = "";
 }
 
+function calcTasks() {
+    var tasksDone = document.querySelectorAll('[id=done]').length
+    document.getElementById("tasksAmount").innerHTML = `tasks  ${tasksDone} / ${JSON.parse(localStorage.items).length}`
+} 
+
 function doTask() {
     let element = this.firstChild
     if (element.style["background-color"] == "rgb(231, 114, 0)") {
         element.style["background-color"] = "#4d6b78";
+        this.id = ""
+        calcTasks()
         return
     }
+
     element.style["background-color"] = "#e77200";
+    this.id = "done"
+    calcTasks()
 }
 
 function removeTask() {
