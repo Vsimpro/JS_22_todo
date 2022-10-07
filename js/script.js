@@ -60,15 +60,13 @@ function removeFromLocal(element){
 }
 
 function clearAll() {
-    if (list.length == 0) { return }
+    if (list.length == 0) { return } // If the list is empty, don't confirm
     // Are you sure? alert
     if (!confirm("Are you sure you want to delete all the tasks?")) {
         return
     }
-    // clear the JSON
-    for (var i = 0; i < list.length; i++) {
-        removeFromLocal(list[i]);
-    }
+    var empty = []  
+    localStorage.setItem("items", JSON.stringify(empty))
     // clear the <ul>
    document.getElementById("tasks").innerHTML = "";
 }
