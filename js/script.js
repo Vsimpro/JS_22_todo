@@ -45,6 +45,10 @@ function onLoad() {
 }
 
 function clearAll() {
+    // Are you sure? alert
+    if (!confirm("Are you sure you want to delete all the tasks?")) {
+        return
+    }
     // clear the JSON
     for (var i = 0; i < list.length; i++) {
         removeFromJSon(list[i]);
