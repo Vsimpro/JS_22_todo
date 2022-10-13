@@ -44,6 +44,7 @@ class Task {
         let element = this.parentElement;
         removeFromLocal(element.textContent.replace("doneremove", ""))
         element.remove();
+        calcTasks()
     }
 }
 
@@ -68,8 +69,10 @@ window.onload = function(){
 
     document.getElementById("main").addEventListener("click", function() {
         let inputValue = document.getElementById("task").value; // get the task from the input box
-        addNewTask(inputValue)
-        addToLocal(inputValue)  
+        if (inputValidation(inputValue)) {
+            addNewTask(inputValue)
+            addToLocal(inputValue)  
+        }
     });
     document.getElementById("task").addEventListener("keypress", function(event) {
        if (event.key === "Enter") { // pressing enter triggers the "+" button
@@ -138,6 +141,10 @@ function doTask() {
         }
     }
 
+    if (items[index] == undefined) {
+        return;
+    }
+
     state = true;
     if (items[index].done == 0) {
         state = false;
@@ -165,10 +172,8 @@ function calcTasks() {
 } 
 
 function addNewTask(input, state) {
-    if (inputValidation(input)) { // Create new task object
         let newTask = new Task(input, state);
         newTask.create()
-    }
 }
 
 function inputValidation(inputValue) {
@@ -197,9 +202,10 @@ function inputValidation(inputValue) {
         selectedError = tooMany;
     }
 
+    document.getElementById("error").innerHTML = selectedError;
+
     if (selectedError != "") {
         errorLine.style["border"] = "2px dashed red";
-        document.getElementById("error").innerHTML = selectedError;
         return false;
     }
 
