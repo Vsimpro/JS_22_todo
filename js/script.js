@@ -36,7 +36,6 @@ class Task {
         // To Do: Make this make sense
         let element = this.parentElement;
         removeFromLocal(element.textContent.replace("doneremove", ""))
-        document.getElementById("limit").style.display = "none"
         element.remove();
     }
     doTask() {
@@ -140,29 +139,34 @@ function addNewTask(input) {
 }
 
 function inputValidation(inputValue) {
+    let tooLong = "Task must be 20 characters at most";
+    let tooMany = "Too many tasks.. please remove some";
+    let tooShort = "New task can't be under 3 characters!";
+    
+
+    let selectedError = ""
+
     var errorLine = document.getElementById("task");
     errorLine.style["border"] = "2px dashed red";
 
     // input validation
     if (inputValue.length >= 20) {
-        document.getElementById("toolong").style.display = "";
-        return false;
+        selectedError = tooLong;
     }
         
     if (inputValue.length <= 3) {
-        document.getElementById("error").style.display = ""
-        return false;
+        selectedError = tooShort;
     }
         
     if (JSON.parse(localStorage.items).length >= maxAmount) {
-        document.getElementById("limit").style.display = ""
-        return false;
+        selectedError = tooMany;
     }
 
+    if (selectedError != "") {
+        document.getElementById("error").innerHTML = selectedError;
+        return false;
+    }
     // clear the value & error
-    document.getElementById("task").value = "";
-    document.getElementById("error").style.display = "none"
-    document.getElementById("toolong").style.display = "none";
     errorLine.style["border"] = "";
 
     return true;
