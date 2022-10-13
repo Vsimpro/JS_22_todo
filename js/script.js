@@ -2,6 +2,39 @@
 var list = [];
 var maxAmount = 8
 
+class Task {
+    // Parameteres of a Task Object
+    constructor(taskitem) {
+        this.taskitem = taskitem;
+        this.listItem = document.createElement("li");
+        this.doneButton = document.createElement("span");
+        this.taskText = document.createTextNode(taskitem);
+        this.removeButton = document.createElement("span");        
+    }
+    create() {
+        // Create a new Task Object
+        let done = this.doneButton;
+        let task = this.taskText;
+        let li_item = this.listItem;
+        let remove = this.removeButton;
+
+        done.id = "dot"
+        done.innerHTML = "done";
+
+        remove.id = "removeButton";
+        remove.innerHTML = "remove";
+        remove.onclick = removeTask
+        remove.addEventListener("click", removeTask);
+        
+        li_item.onclick = doTask;
+        li_item.appendChild(done);
+        li_item.appendChild(remove);
+        li_item.appendChild(task);
+
+        document.getElementById("tasks").appendChild(li_item)
+    }
+}
+
 // Prepare onload
 window.onload = function(){ 
     // get old items
@@ -16,7 +49,7 @@ window.onload = function(){
             
             // Edge case where local storage has been fiddled with (idk why you would)
             if (inputValidation(task)) {
-                addNewItem(task)
+                addNewTask(task)
                 
             } else {
                 alert("Problem with localstorage.")
@@ -100,33 +133,9 @@ function removeTask() {
     element.remove();
 }
 
-function addNewItem(input) {
-    document.getElementById("limit").style.display = "none"
-
-    // create a new list item
-    let listItem = document.createElement("li");
-    listItem.onclick = doTask
-
-    // add dot
-    let dot = document.createElement("span")
-    dot.id = "dot"
-    dot.innerHTML = "done";
-    listItem.appendChild(dot);
-
-    // new remove button
-    let removeButton = document.createElement("span")
-    removeButton.id = "removeButton";
-    removeButton.innerHTML = "remove";
-    removeButton.onclick = removeTask
-    removeButton.addEventListener("click", removeTask);
-    listItem.appendChild(removeButton);
-
-    // append text
-    let newTask = document.createTextNode(input);
-    listItem.appendChild(newTask);
-
-    // add the new item to the list
-    document.getElementById("tasks").appendChild(listItem)
+function addNewTask(input) {
+    let newTask = new Task(input);
+    newTask.create()
 }
 
 function inputValidation(inputValue) {
@@ -163,7 +172,7 @@ function getTask() {
     var inputValue = document.getElementById("task").value;
     
     if (inputValidation(inputValue)) {
-        addNewItem(inputValue)
+        addNewTask(inputValue)
         addToLocal(inputValue)
     }
 }
