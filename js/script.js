@@ -58,46 +58,58 @@ class Task {
     }
 }
 
-// Prepare onload
 window.onload = function(){ 
-    // get old items
-    if (localStorage.items != undefined) {
-        let oldItems = JSON.parse(localStorage.items)
+    document.getElementById("clear").onclick = function () { // Prepare "clear all" button
+        let empty = [];
+        let confirmText = "Are you sure you want to delete all the tasks?";
         
-        for (let i = 0; i < oldItems.length; i++) {
-            var task = oldItems[i].task
-            if (task == null) {
-            continue
-            }
-            
-            // Edge case where local storage has been fiddled with (idk why you would)
-            if (inputValidation(task)) {
-                addNewTask(task)
-                
-            } else {
-                alert("Problem with localstorage.")
-                clearAll()
-            }
+        // If the list is empty, do nothing.
+        if (JSON.parse(localStorage.items).length == 0) { 
+            return; 
+        } 
+        
+        if (!confirm(confirmText)) { // If you press cancel, exit
+            return;
         }
-    }
-    // add event listeners
-    document.getElementById("clear").onclick = clearAll;
-    
+        
+        localStorage.setItem("items", JSON.stringify(empty))
+        document.getElementById("tasks").innerHTML = "";
+    };
+
     document.getElementById("main").addEventListener("click", function() {
-        // get the task from the input box
-        var inputValue = document.getElementById("task").value;
+        let inputValue = document.getElementById("task").value; // get the task from the input box
         addNewTask(inputValue)
         addToLocal(inputValue)  
     });
-
     document.getElementById("task").addEventListener("keypress", function(event) {
-       if (event.key === "Enter") {
-        // pressing enter triggers the "+" button
+       if (event.key === "Enter") { // pressing enter triggers the "+" button
             event.preventDefault();
             document.getElementById("main").click();
        }
     });
-   calcTasks() 
+
+    // get old items
+    if (localStorage.items == undefined) { // If no prior tasks, exit
+        return;
+    }
+
+    let oldItems = JSON.parse(localStorage.items)
+        
+    for (let item = 0; item < oldItems.length; item++) {
+        let task = oldItems[item].task
+        if (task == null) {
+            continue
+        }
+            
+        if (inputValidation(task)) { // Edge case where local storage has been fiddled with (idk why you would)
+            addNewTask(task)
+               
+        } else {
+            alert("Problem with localstorage.")
+            clearAll()
+        }
+    }
+    calcTasks()
 };
 
 // Functions
@@ -119,22 +131,6 @@ function removeFromLocal(element){
     localStorage.setItem("items", JSON.stringify(items));
 }
 
-function clearAll() {
-    let empty = [];
-    let confirmText = "Are you sure you want to delete all the tasks?";
-    
-    // If the list is empty, do nothing.
-    if (JSON.parse(localStorage.items).length == 0) { 
-        return; 
-    } 
-    
-    if (!confirm(confirmText)) {
-        return;
-    }
-      
-    localStorage.setItem("items", JSON.stringify(empty))
-    document.getElementById("tasks").innerHTML = "";
-}
 
 function calcTasks() {
     var tasksDone = document.querySelectorAll('[id=done]').length
@@ -142,7 +138,7 @@ function calcTasks() {
 } 
 
 function addNewTask(input) {
-    if (inputValidation(input)) {
+    if (inputValidation(input)) { // Create new task object
         let newTask = new Task(input);
         newTask.create()
     }
@@ -155,6 +151,11 @@ function inputValidation(inputValue) {
     let selectedError = ""
 
     let errorLine = document.getElementById("task");
+    let localList = localStorage.items || []
+
+    if (localStorage.items != undefined){
+        localList = JSON.parse(localStorage.items)
+    }
     
     // input validation
     if (inputValue.length >= 20) {
@@ -165,7 +166,7 @@ function inputValidation(inputValue) {
         selectedError = tooShort;
     }
         
-    if (JSON.parse(localStorage.items).length >= maxAmount) {
+    if (localList.length >= maxAmount) {
         selectedError = tooMany;
     }
 
