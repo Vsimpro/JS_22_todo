@@ -1,10 +1,10 @@
 // Global Variables
-var list = [];
 var maxAmount = 8
 
 class Task {
     // Parameteres of a Task Object
     constructor(taskitem) {
+        this.doneState = false;
         this.taskitem = taskitem;
         this.listItem = document.createElement("li");
         this.doneButton = document.createElement("span");
@@ -23,15 +23,37 @@ class Task {
 
         remove.id = "removeButton";
         remove.innerHTML = "remove";
-        remove.onclick = removeTask
-        remove.addEventListener("click", removeTask);
+        remove.onclick = this.removeTask
         
-        li_item.onclick = doTask;
+        li_item.onclick = this.doTask;
         li_item.appendChild(done);
         li_item.appendChild(remove);
         li_item.appendChild(task);
 
         document.getElementById("tasks").appendChild(li_item)
+    }
+    removeTask() {
+        // To Do: Make this make sense
+        let element = this.parentElement;
+        removeFromLocal(element.textContent.replace("doneremove", ""))
+        document.getElementById("limit").style.display = "none"
+        element.remove();
+    }
+    doTask() {
+        let element = this.firstChild;
+        let orange = "rgb(231, 114, 0)";
+        let opaque = "#4d6b78";
+
+        if (this.doneState) {
+            this.id = ""
+            this.doneState = false;
+            element.style["background-color"] = opaque;
+        } else {    
+            this.doneState = true;
+            element.style["background-color"] = orange;
+            this.id = "done"
+        }
+        calcTasks()
     }
 }
 
@@ -57,22 +79,17 @@ window.onload = function(){
             }
         }
     }
-    // add event listener to 
+    // add event listeners
     document.getElementById("main").addEventListener("click", getTask);
-
-    // pressing enter triggers the "+" button;
-    let taskbox = document.getElementById("task")
-    taskbox.addEventListener("keypress", function(event) {
+    document.getElementById("clear").onclick = clearAll;
+    document.getElementById("task").addEventListener("keypress", function(event) {
        if (event.key === "Enter") {
+        // pressing enter triggers the "+" button
             event.preventDefault();
             document.getElementById("main").click();
        }
     });
-
-   // create "clear tasks" button
-   var clearall = document.getElementById("clear");
-   clearall.onclick = clearAll;
-   calcTasks()
+   calcTasks() 
 };
 
 
@@ -96,42 +113,26 @@ function removeFromLocal(element){
 }
 
 function clearAll() {
-    if (JSON.parse(localStorage.items).length == 0) { return } // If the list is empty, don't confirm
-    // Are you sure? alert
-    if (!confirm("Are you sure you want to delete all the tasks?")) {
-        return
+    let empty = [];
+    let confirmText = "Are you sure you want to delete all the tasks?";
+    
+    // If the list is empty, do nothing.
+    if (JSON.parse(localStorage.items).length == 0) { 
+        return; 
+    } 
+    
+    if (!confirm(confirmText)) {
+        return;
     }
-    var empty = []  
+      
     localStorage.setItem("items", JSON.stringify(empty))
-    // clear the <ul>
-   document.getElementById("tasks").innerHTML = "";
+    document.getElementById("tasks").innerHTML = "";
 }
 
 function calcTasks() {
     var tasksDone = document.querySelectorAll('[id=done]').length
     document.getElementById("tasksAmount").innerHTML = `tasks  ${tasksDone} / ${JSON.parse(localStorage.items).length}`
 } 
-
-function doTask() {
-    let element = this.firstChild
-    if (element.style["background-color"] == "rgb(231, 114, 0)") {
-        element.style["background-color"] = "#4d6b78";
-        this.id = ""
-        calcTasks()
-        return
-    }
-
-    element.style["background-color"] = "#e77200";
-    this.id = "done"
-    calcTasks()
-}
-
-function removeTask() {
-    let element = this.parentElement;
-    removeFromLocal(element.textContent.replace("doneremove", ""))
-    document.getElementById("limit").style.display = "none"
-    element.remove();
-}
 
 function addNewTask(input) {
     let newTask = new Task(input);
