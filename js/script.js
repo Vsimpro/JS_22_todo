@@ -39,19 +39,21 @@ class Task {
         element.remove();
     }
     doTask() {
-        let element = this.firstChild;
-        let orange = "rgb(231, 114, 0)";
+        let state = this.doneState
         let opaque = "#4d6b78";
+        let orange = "rgb(231, 114, 0)";
+        let element = this.firstChild;
 
-        if (this.doneState) {
+        if (state) {
             this.id = ""
             this.doneState = false;
             element.style["background-color"] = opaque;
         } else {    
+            this.id = "done"
             this.doneState = true;
             element.style["background-color"] = orange;
-            this.id = "done"
         }
+        // update task counter
         calcTasks()
     }
 }
@@ -79,8 +81,15 @@ window.onload = function(){
         }
     }
     // add event listeners
-    document.getElementById("main").addEventListener("click", getTask);
     document.getElementById("clear").onclick = clearAll;
+    
+    document.getElementById("main").addEventListener("click", function() {
+        // get the task from the input box
+        var inputValue = document.getElementById("task").value;
+        addNewTask(inputValue)
+        addToLocal(inputValue)  
+    });
+
     document.getElementById("task").addEventListener("keypress", function(event) {
        if (event.key === "Enter") {
         // pressing enter triggers the "+" button
@@ -91,18 +100,17 @@ window.onload = function(){
    calcTasks() 
 };
 
-
 // Functions
 function addToLocal(element){
-    var list = JSON.parse(localStorage.getItem("items")) || [];
-    var obj = {task:element, done:0}
+    let list = JSON.parse(localStorage.getItem("items")) || [];
+    let obj = {task:element, done:0}
     list.push(obj)
     localStorage.setItem("items", JSON.stringify(list));
     calcTasks()
 }
 
 function removeFromLocal(element){
-    var items = JSON.parse(localStorage.items)
+    let items = JSON.parse(localStorage.items)
     for (let i = 0; i < items.length; i++) {
         if (element == items[i].task) {
             delete items.splice(i, 1);
@@ -134,21 +142,20 @@ function calcTasks() {
 } 
 
 function addNewTask(input) {
-    let newTask = new Task(input);
-    newTask.create()
+    if (inputValidation(input)) {
+        let newTask = new Task(input);
+        newTask.create()
+    }
 }
 
 function inputValidation(inputValue) {
     let tooLong = "Task must be 20 characters at most";
     let tooMany = "Too many tasks.. please remove some";
     let tooShort = "New task can't be under 3 characters!";
-    
-
     let selectedError = ""
 
-    var errorLine = document.getElementById("task");
-    errorLine.style["border"] = "2px dashed red";
-
+    let errorLine = document.getElementById("task");
+    
     // input validation
     if (inputValue.length >= 20) {
         selectedError = tooLong;
@@ -163,21 +170,12 @@ function inputValidation(inputValue) {
     }
 
     if (selectedError != "") {
+        errorLine.style["border"] = "2px dashed red";
         document.getElementById("error").innerHTML = selectedError;
         return false;
     }
+
     // clear the value & error
     errorLine.style["border"] = "";
-
     return true;
-}
-
-function getTask() {
-    // get the input value
-    var inputValue = document.getElementById("task").value;
-    
-    if (inputValidation(inputValue)) {
-        addNewTask(inputValue)
-        addToLocal(inputValue)
-    }
 }
