@@ -142,7 +142,7 @@ function doTask() {
     }
 
     if (items[index] == undefined) {
-        return;
+        return; //Edge case where clicking remove checks done state.
     }
 
     state = true;
@@ -179,7 +179,7 @@ function addNewTask(input, state) {
 function inputValidation(inputValue) {
     let tooLong = "Task must be 20 characters at most";
     let tooMany = "Too many tasks.. please remove some";
-    let tooShort = "New task can't be under 3 characters!";
+    let tooShort = "New task can't be under 4 characters!";
     let selectedError = ""
 
     let errorLine = document.getElementById("task");
