@@ -7,16 +7,17 @@ window.onload = function(){
     // get old items
     if (localStorage.items != undefined) {
         let oldItems = JSON.parse(localStorage.items)
-
+        
         for (let i = 0; i < oldItems.length; i++) {
-            if (oldItems[i] == null) {
+            var task = oldItems[i].task
+            if (task == null) {
             continue
             }
             
             // Edge case where local storage has been fiddled with (idk why you would)
-            if (inputValidation(oldItems[i])) {
-                addNewItem(oldItems[i])
-                list.push(oldItems[i])
+            if (inputValidation(task)) {
+                addNewItem(task)
+                
             } else {
                 alert("Problem with localstorage.")
                 clearAll()
@@ -44,23 +45,25 @@ window.onload = function(){
 
 // Functions
 function addToLocal(element){
-    list.push(element)
+    var list = JSON.parse(localStorage.getItem("items")) || [];
+    var obj = {task:element, done:0}
+    list.push(obj)
     localStorage.setItem("items", JSON.stringify(list));
+    calcTasks()
 }
 
 function removeFromLocal(element){
     var items = JSON.parse(localStorage.items)
     for (let i = 0; i < items.length; i++) {
-        if (element == items[i]) {
+        if (element == items[i].task) {
             delete items.splice(i, 1);
-            delete list.splice(i, 1);
         }
     }
     localStorage.setItem("items", JSON.stringify(items));
 }
 
 function clearAll() {
-    if (list.length == 0) { return } // If the list is empty, don't confirm
+    if (JSON.parse(localStorage.items).length == 0) { return } // If the list is empty, don't confirm
     // Are you sure? alert
     if (!confirm("Are you sure you want to delete all the tasks?")) {
         return
@@ -141,7 +144,7 @@ function inputValidation(inputValue) {
         return false;
     }
         
-    if (list.length >= maxAmount) {
+    if (JSON.parse(localStorage.items).length >= maxAmount) {
         document.getElementById("limit").style.display = ""
         return false;
     }
