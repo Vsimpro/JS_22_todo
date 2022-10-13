@@ -1,10 +1,12 @@
 // Global Variables
+var opaque = "#4d6b78";
+var orange = "rgb(231, 114, 0)";
 var maxAmount = 8
 
 class Task {
     // Parameteres of a Task Object
-    constructor(taskitem) {
-        this.doneState = false;
+    constructor(taskitem, state) {
+        this.doneState = state;
         this.taskitem = taskitem;
         this.listItem = document.createElement("li");
         this.doneButton = document.createElement("span");
@@ -25,36 +27,23 @@ class Task {
         remove.innerHTML = "remove";
         remove.onclick = this.removeTask
         
-        li_item.onclick = this.doTask;
+        li_item.onclick = doTask;
         li_item.appendChild(done);
         li_item.appendChild(remove);
         li_item.appendChild(task);
 
-        document.getElementById("tasks").appendChild(li_item)
+        if (this.doneState) {
+            li_item.id = "done";
+            done.style["background-color"] = orange;
+        }
+        
+        document.getElementById("tasks").appendChild(li_item);
     }
     removeTask() {
         // To Do: Make this make sense
         let element = this.parentElement;
         removeFromLocal(element.textContent.replace("doneremove", ""))
         element.remove();
-    }
-    doTask() {
-        let state = this.doneState
-        let opaque = "#4d6b78";
-        let orange = "rgb(231, 114, 0)";
-        let element = this.firstChild;
-
-        if (state) {
-            this.id = ""
-            this.doneState = false;
-            element.style["background-color"] = opaque;
-        } else {    
-            this.id = "done"
-            this.doneState = true;
-            element.style["background-color"] = orange;
-        }
-        // update task counter
-        calcTasks()
     }
 }
 
@@ -74,6 +63,7 @@ window.onload = function(){
         
         localStorage.setItem("items", JSON.stringify(empty))
         document.getElementById("tasks").innerHTML = "";
+        calcTasks();
     };
 
     document.getElementById("main").addEventListener("click", function() {
@@ -100,10 +90,14 @@ window.onload = function(){
         if (task == null) {
             continue
         }
-            
+
+        let state = false;
         if (inputValidation(task)) { // Edge case where local storage has been fiddled with (idk why you would)
-            addNewTask(task)
-               
+            if (oldItems[item].done == 1) {
+                state = true;
+            }
+            addNewTask(task, state)
+                           
         } else {
             alert("Problem with localstorage.")
             clearAll()
@@ -131,15 +125,48 @@ function removeFromLocal(element){
     localStorage.setItem("items", JSON.stringify(items));
 }
 
+function doTask() {
+    let state = this.doneState;
+    let element = this.firstChild;
+    
+    let items = JSON.parse(localStorage.items)
+    let thisTask = this.innerText.replace("doneremove","")
+    
+    for (var index = 0; index < items.length; index++) {
+        if (items[index].task == thisTask) {
+            stateInStore = items[index].done; break;
+        }
+    }
+
+    state = true;
+    if (items[index].done == 0) {
+        state = false;
+    }
+
+    if (state) {
+        this.id = ""
+        this.doneState = false;
+        items[index].done = 0;
+        element.style["background-color"] = opaque;
+    } else {    
+        this.id = "done"
+        this.doneState = true;
+        items[index].done = 1;
+        element.style["background-color"] = orange;
+    }
+
+    localStorage.setItem("items", JSON.stringify(items))
+    calcTasks()// update task counter
+}
 
 function calcTasks() {
     var tasksDone = document.querySelectorAll('[id=done]').length
     document.getElementById("tasksAmount").innerHTML = `tasks  ${tasksDone} / ${JSON.parse(localStorage.items).length}`
 } 
 
-function addNewTask(input) {
+function addNewTask(input, state) {
     if (inputValidation(input)) { // Create new task object
-        let newTask = new Task(input);
+        let newTask = new Task(input, state);
         newTask.create()
     }
 }
