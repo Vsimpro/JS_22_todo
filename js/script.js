@@ -3,6 +3,15 @@ var opaque = "#4d6b78";
 var orange = "rgb(231, 114, 0)";
 var maxAmount = 8
 
+class Errors {
+    constructor() {
+        this.duplicate = "Task is already in the list..";
+        this.tooLong   = "Task must be 20 characters at most";
+        this.tooMany   = "Too many tasks.. please remove some";
+        this.tooShort  = "New task can't be under 4 characters!";
+    }
+}
+
 class Task {
     // Parameteres of a Task Object
     constructor(taskitem, state) {
@@ -62,6 +71,7 @@ window.onload = function(){
             return;
         }
         
+        document.getElementById("task").value = "";
         localStorage.setItem("items", JSON.stringify(empty))
         document.getElementById("tasks").innerHTML = "";
         calcTasks();
@@ -94,17 +104,12 @@ window.onload = function(){
             continue
         }
 
-        let state = false;
-        if (inputValidation(task)) { // Edge case where local storage has been fiddled with (idk why you would)
-            if (oldItems[item].done == 1) {
-                state = true;
-            }
-            addNewTask(task, state)
-                           
-        } else {
-            alert("Problem with localstorage.")
-            clearAll()
+        let doneState = false;
+         
+        if (oldItems[item].done == 1) {
+             doneState = true;
         }
+        addNewTask(task, doneState)                       
     }
     calcTasks()
 };
@@ -176,30 +181,34 @@ function addNewTask(input, state) {
         newTask.create()
 }
 
-function inputValidation(inputValue) {
-    let tooLong = "Task must be 20 characters at most";
-    let tooMany = "Too many tasks.. please remove some";
-    let tooShort = "New task can't be under 4 characters!";
-    let selectedError = ""
-
+function inputValidation(input) {
+    let selectedError = "";
+    let localItems = localStorage.items || [];
     let errorLine = document.getElementById("task");
-    let localList = localStorage.items || []
-
-    if (localStorage.items != undefined){
-        localList = JSON.parse(localStorage.items)
-    }
     
-    // input validation
-    if (inputValue.length >= 20) {
-        selectedError = tooLong;
+    if (localStorage.items != undefined){
+        localItems = JSON.parse(localStorage.items)
+    }
+
+    if (localItems.length >= maxAmount) {
+        // Too many tasks.
+        selectedError = Errors.tooMany;
+    }
+
+    if (input.length >= 20) {
+        // Task is too long.
+        selectedError = Errors.tooLong;
     }
         
-    if (inputValue.length <= 3) {
-        selectedError = tooShort;
+    if (input.length <= 3) {
+        // Task is too short.
+        selectedError = Errors.tooShort;
     }
-        
-    if (localList.length >= maxAmount) {
-        selectedError = tooMany;
+
+    for (let i = 0; i < localItems.length; i++) {
+        if (localItems[i].task == input) {
+            selectedError = duplicate;
+        }
     }
 
     document.getElementById("error").innerHTML = selectedError;
