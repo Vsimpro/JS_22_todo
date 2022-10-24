@@ -3,15 +3,6 @@ var opaque = "#4d6b78";
 var orange = "rgb(231, 114, 0)";
 var maxAmount = 8
 
-class Errors {
-    constructor() {
-        this.duplicate = "Task is already in the list..";
-        this.tooLong   = "Task must be 20 characters at most";
-        this.tooMany   = "Too many tasks.. please remove some";
-        this.tooShort  = "New task can't be under 4 characters!";
-    }
-}
-
 class Task {
     // Parameteres of a Task Object
     constructor(taskitem, state) {
@@ -71,6 +62,7 @@ window.onload = function(){
             return;
         }
         
+        inputValidation("1234") // Clear errors by validating an input. Yes it's hacky.
         document.getElementById("task").value = "";
         localStorage.setItem("items", JSON.stringify(empty))
         document.getElementById("tasks").innerHTML = "";
@@ -80,8 +72,8 @@ window.onload = function(){
     document.getElementById("main").addEventListener("click", function() {
         let inputValue = document.getElementById("task").value; // get the task from the input box
         if (inputValidation(inputValue)) {
-            addNewTask(inputValue)
-            addToLocal(inputValue)  
+                 addNewTask(inputValue)
+                 addToLocal(inputValue)  
         }
     });
     document.getElementById("task").addEventListener("keypress", function(event) {
@@ -182,7 +174,15 @@ function addNewTask(input, state) {
 }
 
 function inputValidation(input) {
+    let errorBorder = "2px dashed red";
+
+    let duplicate = "Task is already in the list..";
+    let tooLong   = "Task must be 20 characters at most";
+    let tooMany   = "Too many tasks.. please remove some";
+    let tooShort  = "New task can't be under 4 characters!";
+
     let selectedError = "";
+
     let localItems = localStorage.items || [];
     let errorLine = document.getElementById("task");
     
@@ -192,17 +192,17 @@ function inputValidation(input) {
 
     if (localItems.length >= maxAmount) {
         // Too many tasks.
-        selectedError = Errors.tooMany;
+        selectedError = tooMany;
     }
 
     if (input.length >= 20) {
         // Task is too long.
-        selectedError = Errors.tooLong;
+        selectedError = tooLong;
     }
         
     if (input.length <= 3) {
         // Task is too short.
-        selectedError = Errors.tooShort;
+        selectedError = tooShort;
     }
 
     for (let i = 0; i < localItems.length; i++) {
@@ -214,7 +214,7 @@ function inputValidation(input) {
     document.getElementById("error").innerHTML = selectedError;
 
     if (selectedError != "") {
-        errorLine.style["border"] = "2px dashed red";
+        errorLine.style["border"] = errorBorder;
         return false;
     }
 
