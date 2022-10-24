@@ -4,7 +4,7 @@
 #### View with;
 Open file location in browser
 ```
-~./index.html
+~../index.html
 ```
 
 or click the links below
@@ -12,6 +12,9 @@ or click the links below
 Links;
 - Netlify; TO-DO (heh)
 - Selfhosting; https://todo.vsim.xyz
+
+
+
 
 #### Handbaked by;
 * Ville Similä
