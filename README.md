@@ -14,7 +14,8 @@ Links;
 - Selfhosting; https://todo.vsim.xyz
 
 
-
-
 #### Handbaked by;
 * Ville Similä
+
+### Developers note; 
+![Alt text](img/scaling.png?raw=true "It's a feature")
