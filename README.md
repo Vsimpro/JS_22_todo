@@ -17,5 +17,7 @@ Links;
 #### Handbaked by;
 * Ville Similä
 
-### Developers note; 
+### Developers note(s);
+Sometimes some bugs have been left in some cloudflare caches. If for example the errors show up as "undefined", you're likely experiencing an early error. Netlify should be up to date, however.
+Speaking of bugs, 
 ![Alt text](img/scaling.png?raw=true "It's a feature")
