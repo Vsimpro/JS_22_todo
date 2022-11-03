@@ -10,7 +10,7 @@ Open file location in browser
 or click the links below
 
 Links;
-- Netlify; TO-DO (heh)
+- Netlify; https://tranquil-melba-d84b04.netlify.app/
 - Selfhosting; https://todo.vsim.xyz
 
 
