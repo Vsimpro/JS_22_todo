@@ -31,11 +31,11 @@ body {
     box-shadow: 8px 8px 2px #222222;
 }
 
-.clearall {
+.top {
    float: right;    
 }
 
-.clearall:hover {
+.top:hover {
    position: relative;
    right: 1%;
    box-shadow:2px 2px 2px #222222;
@@ -152,7 +152,7 @@ button:hover {
     width: 80%;
     margin-top: 5%    
   }
-  .clearall {
+  .top {
      font-size: 2vw;
   }
 

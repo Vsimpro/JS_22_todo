@@ -2,6 +2,7 @@
 var opaque = "#4d6b78";
 var orange = "rgb(231, 114, 0)";
 var maxAmount = 8
+var showDone = true;
 
 class Task {
     // Parameteres of a Task Object
@@ -68,6 +69,32 @@ window.onload = function(){
         document.getElementById("tasks").innerHTML = "";
         calcTasks();
     };
+    document.getElementById("toggleshow").onclick = function () { // Prepare "hide done" button
+        let text = ""
+        let listElements = document.getElementsByTagName("li");
+        
+
+        // Toggle state on and off
+        if (showDone == true) {
+            text = "show all"
+            showDone = false;
+        } else {
+            text = "hide done"
+            showDone = true;
+        }
+
+        for (let i = 0; i < listElements.length; i++) {
+            thisTask = listElements[i];
+            thisTask.style.display = "";
+
+            if (thisTask.id == "done" && showDone == false) {
+                thisTask.style.display = "none";
+            }
+        }
+        
+        document.getElementById("toggleshow").innerHTML = text;
+
+    }
 
     document.getElementById("main").addEventListener("click", function() {
         let inputValue = document.getElementById("task").value; // get the task from the input box
