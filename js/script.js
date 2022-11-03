@@ -186,6 +186,11 @@ function doTask() {
         element.style["background-color"] = orange;
     }
 
+    if (showDone != true) {
+        this.style.display = "none"
+    }
+
+
     localStorage.setItem("items", JSON.stringify(items))
     calcTasks()// update task counter
 }
